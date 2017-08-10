@@ -1,8 +1,8 @@
 //
 //  GameViewController.swift
-//  Bridged
+//  Experiment
 //
-//  Created by Preston Jordan on 4/7/16.
+//  Created by Preston Jordan on 3/16/16.
 //  Copyright (c) 2016 Preston Jordan. All rights reserved.
 //
 
@@ -10,44 +10,56 @@ import UIKit
 import SpriteKit
 
 class GameViewController: UIViewController {
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
 
-        if let scene = GameScene(fileNamed:"GameScene") {
-            // Configure the view.
-            let skView = self.view as! SKView
-            skView.showsFPS = true
-            skView.showsNodeCount = true
-            
-            /* Sprite Kit applies additional optimizations to improve rendering performance */
-            skView.ignoresSiblingOrder = true
-            
-            /* Set the scale mode to scale to fit the window */
-            scene.scaleMode = .AspectFill
-            
-            skView.presentScene(scene)
+        if let skView = self.view as! SKView? {
+        
+            if skView.scene == nil {
+                if let scene = GameScene(fileNamed: "GameScene") {
+                    scene.viewController = self
+                    scene.scaleMode = .aspectFill
+                    scene.size = skView.bounds.size
+                    skView.presentScene(scene)
+                }
+
+                skView.ignoresSiblingOrder = true
+                skView.showsNodeCount = true
+                skView.showsFPS = true
+                
+            }
         }
     }
-
-    override func shouldAutorotate() -> Bool {
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        _ = self.view as! SKView
+            let scene = GameScene(fileNamed: "GameScene")!
+            scene.viewController = self
+    }
+    
+    override var shouldAutorotate : Bool {
         return true
     }
-
-    override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
-        if UIDevice.currentDevice().userInterfaceIdiom == .Phone {
-            return .AllButUpsideDown
+    
+    override var supportedInterfaceOrientations : UIInterfaceOrientationMask {
+        if UIDevice.current.userInterfaceIdiom == .phone {
+            return .portrait
         } else {
-            return .All
+            return .portrait
         }
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Release any cached data, images, etc that aren't in use.
     }
-
-    override func prefersStatusBarHidden() -> Bool {
+    
+    override var prefersStatusBarHidden : Bool {
         return true
     }
 }
